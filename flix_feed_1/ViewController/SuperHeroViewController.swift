@@ -13,7 +13,7 @@ class SuperHeroViewController: UIViewController, UICollectionViewDataSource {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    var movies: [[String: Any]] = []
+    var movies: [MovieModel] = []
     //var refreshControl = UIRefreshControl()
     
     override func viewDidLoad() {
@@ -43,7 +43,12 @@ class SuperHeroViewController: UIViewController, UICollectionViewDataSource {
             } else if let data = data {
                 let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
                 let movieList = dataDictionary["results"] as! [[String: Any]]
-                self.movies = movieList
+                self.movies = []
+                for dictionary in movieList {
+                    let movie = MovieModel(dictionary: dictionary)
+                    self.movies.append(movie)
+                    
+                }
                 self.collectionView.reloadData()
                 //self.refreshControl.endRefreshing()
                 
@@ -65,23 +70,26 @@ class SuperHeroViewController: UIViewController, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ReusePosterCell", for: indexPath) as! ReusePosterCell
         let movie = movies[indexPath.item] //use "item" instead of "row".
-        if let PosterPathString = movie["poster_path"] as? String {
+       /* if let PosterPathString = movie["poster_path"] as? String {
             let baseURLString = "https://image.tmdb.org/t/p/w500"
             let PosterURL = URL(string: baseURLString + PosterPathString)!
             cell.posterImageLabel.af_setImage(withURL: PosterURL)
             
+        }*/
+        if movie.posterUrl != nil {
+            cell.posterImageLabel.af_setImage(withURL: movie.posterUrl!)
         }
         return cell
     }
     //look at NowPlayingViewController for reference.
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    /*override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let cell = sender as! UICollectionViewCell
         if let indexPath = collectionView.indexPath(for: cell){
             let movie = movies[indexPath.row]
             let detailViewControl = segue.destination as! DetailViewController
             detailViewControl.movieDetail = movie
         }
-    }
+    }*/
 
     /*
     // MARK: - Navigation

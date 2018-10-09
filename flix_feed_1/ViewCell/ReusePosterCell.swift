@@ -10,5 +10,10 @@ import UIKit
 
 class ReusePosterCell: UICollectionViewCell {
     @IBOutlet weak var posterImageLabel: UIImageView!
+    var img: MovieModel! {
+        didSet{
+            posterImageLabel.af_setImage(withURL: img.posterUrl!)
+        }
+    }
     
 }
